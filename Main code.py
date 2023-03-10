@@ -109,42 +109,48 @@ plt.figure()
 
 ############################################
 eigenvalue_diffs=np.diff(result) #calculates difference between consecutive eigenvalues that are Riemann zeroes.
-plt.hist(eigenvalue_diffs, bins=int(len(eigenvalue_diffs)**0.5), alpha=0.5, label="Eigenvalues")
+compzzarray_diff=np.diff(compzzarray) ##calculates difference between corresponding riemann zeroes of eigenvalues that are considered riemann zeroes
+plt.xlabel("Spacing between Consecutive eigenvalues corresponding to Reimann zeroes")
+plt.ylabel("frequency")
+plt.hist(eigenvalue_diffs, bins=int(len(eigenvalue_diffs)**0.5), alpha=0.5, label="Spacings between Eigenvalues that are Riemann Zeroes")
+plt.hist(compzzarray_diff, bins=int(len(compzzarray_diff)**0.5), alpha=0.5, label="Corresponding True zeroes")
 plt.legend()
 plt.show()
+plt.figure()
 
-ediff=np.diff(peval)
-riemann_zero_diff=np.diff(reqzzarray)
-compzzarray_diff=np.diff(compzzarray)
-####################################################################
-plt.hist(eigenvalue_diffs, bins=int(len(eigenvalue_diffs)**0.5), alpha=0.5, label="Eigenvalues")
-#plt.hist(riemann_zero_diff, bins=int(len(riemann_zero_diff)**0.5), alpha=0.5, label="Riemann zeroes")
-#plt.hist(ediff, bins=int(len(ediff)**0.5), alpha=0.5, label="eigenvalue diffs")
-plt.hist(compzzarray_diff, bins=int(len(compzzarray_diff)**0.5), alpha=0.5, label="similar zeroes")
+ediff=np.diff(peval) # Calculates Difference between all the consecutive eigenvalues
+plt.xlabel("Spacing between Consecutive eigenvalues")
+plt.ylabel("frequency")
+plt.hist(ediff, bins=int(len(ediff)**0.5), alpha=0.5, label="Spacings between all the eigenvalues")
 plt.legend()
 plt.show()
+plt.figure()
+
+riemann_zero_diff=np.diff(zzarray) #Calculates difference between consective Riemann zeroes
+pllt.xlabel("Non-normalized spacings between Riemann zeroes ")
+plt.ylabel("frequency")
+plt.hist(riemann_zero_diff, bins=int(len(riemann_zero_diff)**0.5), alpha=0.5, label="Non-normalized spacings between Riemann zeroes")
+plt.legend()
+plt.show()
+plt.figure()
 
 
 ################################################################
-plt.figure()
 # Create the KDE plot for eigenvalues
-sns.kdeplot(result, label='Eigenvalues zeroes',bw=0.2,shade=True)
+sns.kdeplot(result, label='Eigenvalue zeroes',bw=0.2,shade=True)
 
 # Create the KDE plot for Riemann zeros
-sns.kdeplot(reqzzarray, label='Riemann Zeros', bw=0.2, shade=True) 
+sns.kdeplot(zzarray, label='Riemann Zeros', bw=0.2, shade=True) 
 
-# Set plot title and axis labels
 plt.title('KDE Plot of Eigenvalues and Riemann Zeros')
-plt.xlabel('Imaginary Part')
+plt.xlabel('Zeroes')
 plt.ylabel('Density')
-
-# Display the plot
 ################################################################
 plt.figure()
 num_bins = int(len(result)**0.5)
 hist_range = (0, max(result))
 
-# Calculate the histogram of the eigenvalues
+# Calculate the histogram of the eigenvalues which are zeroes
 hist_eig, bins_eig = np.histogram(result, bins=num_bins, range=hist_range, density=True)
 
 # Calculate the spectral density
@@ -152,66 +158,33 @@ spectral_density = hist_eig / (2*np.pi*bins_eig[1:]*np.diff(bins_eig))
 
 # Plot the spectral density
 plt.plot(bins_eig[1:], spectral_density)
-plt.xlabel('Eigenvalues')
+plt.xlabel('Frequency')
 plt.ylabel('Spectral Density')
 
 
 
-num_bins = int(len(reqzzarray)**0.5)
-hist_range = (0, max(reqzzarray))
+num_bins = int(len(zzarray)**0.5)
+hist_range = (0, max(zzarray))
 
-# Calculate the histogram of the eigenvalues
-hist_zero, bins_zero = np.histogram(reqzzarray, bins=num_bins, range=hist_range, density=True)
+# Calculate the histogram of reimann zeroes
+hist_zero, bins_zero = np.histogram(zzarray, bins=num_bins, range=hist_range, density=True)
 
 # Calculate the spectral density
 spectral_density = hist_zero / (2*np.pi*bins_zero[1:]*np.diff(bins_zero))
 
 # Plot the spectral density
 plt.plot(bins_zero[1:], spectral_density)
-plt.xlabel('zeroes')
+plt.xlabel('Frequency')
 plt.ylabel('Spectral Density')
 plt.show()
-plt.show()
-
-
-plt.figure()
-num_bins = int(len(eigenvalue_diffs)**0.5)
-hist_range = (0, max(eigenvalue_diffs))
-
-# Calculate the histogram of the eigenvalues
-hist_eig, bins_eig = np.histogram(eigenvalue_diffs, bins=num_bins, range=hist_range, density=True)
-
-# Calculate the spectral density
-spectral_density = hist_eig / (2*np.pi*bins_eig[1:]*np.diff(bins_eig))
-
-# Plot the spectral density
-plt.plot(bins_eig[1:], spectral_density)
-plt.xlabel('Eigenvalues difference')
-plt.ylabel('Spectral Density')
-
 plt.figure()
 
-num_bins = int(len(riemann_zero_diff)**0.5)
-hist_range = (0, max(riemann_zero_diff))
 
-# Calculate the histogram of the eigenvalues
-hist_zero, bins_zero = np.histogram(riemann_zero_diff, bins=num_bins, range=hist_range, density=True)
-
-# Calculate the spectral density
-spectral_density = hist_zero / (2*np.pi*bins_zero[1:]*np.diff(bins_zero))
-
-# Plot the spectral density
-plt.plot(bins_zero[1:], spectral_density)
-plt.xlabel('zeroes difference')
-plt.ylabel('Spectral Density')
-plt.show()
-
-################################################################
+################################################################ Fourier transform
 plt.figure()
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Generate example data
 data = result
 
 # Apply Hann window to data
@@ -230,15 +203,9 @@ freq_shifted = np.fft.fftshift(freq)
 
 # Plot results
 plt.plot(freq_shifted, np.abs(fft_shifted))
-plt.xlabel('Frequency')
-plt.ylabel('Magnitude')
-plt.show()
 
-import numpy as np
-import matplotlib.pyplot as plt
 
-# Generate example data
-data = reqzzarray
+data =zzarray
 
 # Apply Hann window to data
 window = np.hanning(len(data))
@@ -258,41 +225,57 @@ freq_shifted = np.fft.fftshift(freq)
 plt.plot(freq_shifted, np.abs(fft_shifted))
 plt.xlabel('Frequency')
 plt.ylabel('Magnitude')
+plt.legend()
 plt.show()
+plt.figure()
 
 
-'''plt.figure()
+############################################ Equations for positions i in the sequence of eigenvalues for the nth eigenvalue corresponding to a riemann zero
 x=np.arange(1,len(rzposarray)+1)
-
 y=[]
 
+# below is the equation to plot Predicted i position of the nth zero for epsilon=0.29
 for i in x:
-    func=((1/(diff_bound))*(np.log(i)**2))+(np.e*i)+((np.euler_gamma/(diff_bound))*mp.li(i))+((1/diff_bound)*(i**0.5)*np.log(i))-(3*(i**0.5))-(diff_bound*(np.log(i)**0.5))
+    func=(np.log(i)**2)+mp.li(i)-((diff_bound*i*np.log(i))**0.5)+(2*(i**0.5)*np.log(i))+i
     y.append(func)
+
     
-plt.plot(x,rzposarray)
-plt.plot(x,y)
+# below is the equation to plot Predicted i position of the nth zero for epsilon=0.2, comment out the above code for 0.29 and then remove comment of this code
+#for i in x:
+#    func=(1/diff_bound)*((np.log(i)**2)+mp.li(i)-((i*np.log(i))**0.5))+(2*(i**0.5)*np.log(i))+i
+#    y.append(func)
+    
+plt.plot(x,rzposarray,label="True i position of the nth zero")
+plt.plot(x,y, label="Predicted i position of the nth zero")
 plt.xlabel('n')
-plt.ylabel('ith position of nth zero')
+plt.ylabel('i position of nth zero')
+plt.legend()
 plt.show()
 y=np.array(y)
 error=np.abs(y-rzposarray)
 plt.figure()
-plt.plot(error)'''
+plt.xlabel("n")
+plt.ylabel("Absolute error")
+plt.plot(error)
+plt.legend()
+plt.show()
+plt.figure()
 
+###########################################
+plt.xlabel("i")
+plt.ylabel("Determinant of ith matrix")
+plt.scatter(np.arange(0,len(detarray)),detarray, label="Determinants")
+plt.legend()
+plt.show()
 plt.figure()
-plt.scatter(np.arange(0,len(rzdetarray)),rzdetarray)
-plt.figure()
-plt.scatter(np.arange(0,len(riemann_zero_diff)),riemann_zero_diff)
-plt.figure()
+plt.xlabel("i")
+plt.ylabel("spacings between eigenvalues that are Riemann zeroes ")
 plt.scatter(np.arange(0,len(eigenvalue_diffs)),eigenvalue_diffs)
-plt.figure()
-plt.scatter(np.arange(0,len(og_vs_eig_diff)),og_vs_eig_diff)
+plt.legend()
+plt.show()
 
-zero=[]
-for k in result:
-    zero.append(mp.zeta(0.5+1j*k))
-    print(mp.zeta(0.5+1j*k))
+
+
 
 
 
