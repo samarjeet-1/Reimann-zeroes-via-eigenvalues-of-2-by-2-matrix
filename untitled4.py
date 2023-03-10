@@ -6,7 +6,7 @@ import mpmath as mp
 
 
 
-####################################################################
+#################################################################### T
 def primesfrom2to(n):
     """ Input n>=6, Returns a array of primes, 2 <= p < n """
     sieve = numpy.ones(n//3 + (n%6==2), dtype=bool)
@@ -19,55 +19,45 @@ def primesfrom2to(n):
 
 ######################################################################
 
-x=int(input('enter upper limit '))
-primes=primesfrom2to(x)
-nlogn=[]
-for i in range(1,len(primes)):
-    nlogn.append(i*np.log(i))
+x=int(input('enter upper limit ')) #upper limit of prime numbers you want, Maximum value used during testing
+                                   #was 32,000,000 as from 33,000,000 we would run out of riemann zeroes
+primes=primesfrom2to(x) #generate prime numbers
 
 
-peval=[]
-rieval=[]
-zzarray=np.loadtxt("D:\studies\python programs\zero",dtype=float)
-rzposarray=[]
-trarray=[]
-detarray=[]
-matrixarray=[]
+peval=[] #stores largest eigenvalue of each matrix
+zzarray=np.loadtxt("D:\studies\python programs\zero",dtype=float) # loads pre-downloaded list of imaginary part of Riemann zeroes
+detarray=[] # Stores determinant of all matrices
+matrixarray=[] # stores the matrices
 reqzzarray=[]
-#n=smp.symbols('n')
+
 #########################################
-#matrix with prime entries that takes in 4 numbers and gives eigenvalues
-for i in range(1,len(primes)-5):
+for i in range(1,len(primes)-5): #Creates our matrices
     pmatrix=np.array([
       [primes[i],primes[i+1]],
        [primes[i+2],primes[i+3]]
         ])
-    en,ev= np.linalg.eig(pmatrix)
+    en,ev= np.linalg.eig(pmatrix) #calculating eigenvalues
     peval.append(en[1])
     reqzzarray.append(zzarray[i-1])
-    trarray.append(np.trace(pmatrix))
     detarray.append(np.linalg.det(pmatrix))
     matrixarray.append(pmatrix)
     
     
-peval=np.array(peval)
+peval=np.array(peval) #converting list into numpy array
 reqzzarray=np.array(reqzzarray)
     
     
-counter=0
-error=0
-diff_bound=0.001
-count3=0
-rztrarray=[]
-rzdetarray=[]
-rzeigarray=[]
-result=[]
-compzzarray=[]
-zmatrices=[]
-matrixsum=[]
-countingfuncx=[]
-countingfuncy=[]
-def find_pairs(array1, array2):
+diff_bound=0.29  # set the value of ε (epsilon)
+
+rzdetarray=[] #determinants of matrices whose eigenvalues are riemann zeroes
+rzeigarray=[] #eigenvalues w
+result=[] #eigenvalues which are Riemann zeroes
+compzzarray=[] #stores the true riemann zero corresponding to each eigenvalue that is also a riemann zero
+zmatrices=[] #matrices whose eigenvalues are Riemann zeroes
+rzposarray=[]  #stores value of i/position of each eigenvalue that is a riemann zero
+
+
+def find_pairs(array1, array2): #Program that searches for eigenvalues corresponding to zeroes from the entire array of eigevalues
 
     i = 0
     j = 0
@@ -76,10 +66,9 @@ def find_pairs(array1, array2):
             result.append(array2[j])
             compzzarray.append(array1[i])
             rzdetarray.append(detarray[j])
-            rztrarray.append(trarray[j])
             rzposarray.append(j+1)
             zmatrices.append(matrixarray[j])
-            matrixsum.append(np.sum(matrixarray[j]))
+   
           
             
             i += 1
@@ -90,13 +79,7 @@ def find_pairs(array1, array2):
             i += 1
         
             
-            
-
-
-
-
-find_pairs(zzarray, peval)
-
+find_pairs(zzarray, peval) #zzarray is our reference array with pre downloaded zeroes and peval is the array from which we want to find zeroes
 result=np.array(result)
 compzzarray=np.array(compzzarray)
 rztrarray=np.array(rztrarray)
@@ -106,76 +89,33 @@ rzposarray=np.array(rzposarray)
 
         
 
-og_vs_eig_diff=np.abs(result-compzzarray)
-plt.hist(og_vs_eig_diff, bins=int(len(og_vs_eig_diff)**0.5), alpha=0.5, label="true vs eigenvalue")
+og_vs_eig_diff=np.abs(result-compzzarray) #Computes the absolute difference between eigenvalues which are considered as zeroes and true riemann zeroes
+plt.hist(og_vs_eig_diff, bins=int(len(og_vs_eig_diff)**0.5), alpha=0.5, label="true vs eigenvalue") #plots their histogram
+plt.legend()
+plt.show()
 
 plt.figure()
-trcontriarray=np.abs(result-rztrarray)
-plt.hist(trcontriarray, bins=int(len(og_vs_eig_diff)**0.5), alpha=0.5, label="non trace contribution")
+trcontriarray=np.abs(result-rztrarray) #calculates  𝛿r
+plt.hist(trcontriarray, bins=int(len(og_vs_eig_diff)**0.5), alpha=0.5, label="non trace contribution") #plotting 𝛿r histogram
 plt.legend()
 plt.show()
 plt.figure()
 
-'''matrixsumdiff=np.diff(matrixsum)
-#plt.hist(matrixsumdiff, bins=int(len(matrixsumdiff)**0.5), alpha=0.5, label="matrixsumdiff")
+
+
+
  
-# Example array of data
-data = trcontriarray
-
-# Estimate the parameters of the Poisson distribution from data
-mu = matrixsumdiff.mean()
-
-xarray=[]
-xtarray=[]
-yarray=[]
-counts, bin_edges = np.histogram(matrixsumdiff, bins=int(len(matrixsumdiff)**0.5))
-
-for i in range(0,int(len(matrixsumdiff)**0.5)):
-    xarray.append(i)
-    yarray.append( np.sum(counts)* ((np.e**(-mu)*(mu**i))/np.math.factorial(i)))
-    
-plt.plot(xarray,yarray)
-plt.legend()
-plt.show()'''
-
-
-    
-
 
 
 ############################################
+eigenvalue_diffs=np.diff(result) #calculates difference between consecutive eigenvalues that are Riemann zeroes.
+plt.hist(eigenvalue_diffs, bins=int(len(eigenvalue_diffs)**0.5), alpha=0.5, label="Eigenvalues")
+plt.legend()
+plt.show()
 
-def normalize (array,resultarray):
-    for i in range(0,len(array)-1):
-        r=(array[i+1]-array[i])*(np.log(array[i]/(2*np.pi))/(2*np.pi))
-        resultarray.append(r)
-        
-       
-#eigenvalue_diffs = []
-#riemann_zero_diff = []
-
-eigenvalue_diffs=np.diff(result)
 ediff=np.diff(peval)
 riemann_zero_diff=np.diff(reqzzarray)
 compzzarray_diff=np.diff(compzzarray)
-
-
-
-
-#normalize(result,eigenvalue_diffs) 
-#normalize(reqzzarray,riemann_zero_diffs)
-
-#eigenvalue_diffs = np.array(eigenvalue_diffs)
-#riemann_zero_diffs = np.array(riemann_zero_diffs)
-
-#eigenvalue_diffs = (np.rint(eigenvalue_diffs)).astype(int)
-
-#normalized_eigenvalue_diff
-
-
-# Display the plot
-plt.show()
-plt.figure()
 ####################################################################
 plt.hist(eigenvalue_diffs, bins=int(len(eigenvalue_diffs)**0.5), alpha=0.5, label="Eigenvalues")
 #plt.hist(riemann_zero_diff, bins=int(len(riemann_zero_diff)**0.5), alpha=0.5, label="Riemann zeroes")
