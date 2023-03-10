@@ -27,6 +27,7 @@ primes=primesfrom2to(x) #generate prime numbers
 peval=[] #stores largest eigenvalue of each matrix
 zzarray=np.loadtxt("D:\studies\python programs\zero",dtype=float) # loads pre-downloaded list of imaginary part of Riemann zeroes
 detarray=[] # Stores determinant of all matrices
+trarray=[] #trace of marices
 matrixarray=[] # stores the matrices
 reqzzarray=[]
 
@@ -40,6 +41,7 @@ for i in range(1,len(primes)-5): #Creates our matrices
     peval.append(en[1])
     reqzzarray.append(zzarray[i-1])
     detarray.append(np.linalg.det(pmatrix))
+    trarray.append(np.trace(pmatrix))
     matrixarray.append(pmatrix)
     
     
@@ -55,6 +57,7 @@ result=[] #eigenvalues which are Riemann zeroes
 compzzarray=[] #stores the true riemann zero corresponding to each eigenvalue that is also a riemann zero
 zmatrices=[] #matrices whose eigenvalues are Riemann zeroes
 rzposarray=[]  #stores value of i/position of each eigenvalue that is a riemann zero
+rztrarray=[] #trace of matrices whose eigenvalues are riemann zeroes
 
 
 def find_pairs(array1, array2): #Program that searches for eigenvalues corresponding to zeroes from the entire array of eigevalues
@@ -68,6 +71,7 @@ def find_pairs(array1, array2): #Program that searches for eigenvalues correspon
             rzdetarray.append(detarray[j])
             rzposarray.append(j+1)
             zmatrices.append(matrixarray[j])
+            rztrarray.append(trarray[j])
    
           
             
@@ -84,6 +88,7 @@ result=np.array(result)
 compzzarray=np.array(compzzarray)
 rztrarray=np.array(rztrarray)
 rzposarray=np.array(rzposarray)
+rztrarray=np.array(rztrarray)
 
 
 
@@ -127,7 +132,7 @@ plt.show()
 plt.figure()
 
 riemann_zero_diff=np.diff(zzarray) #Calculates difference between consective Riemann zeroes
-pllt.xlabel("Non-normalized spacings between Riemann zeroes ")
+plt.xlabel("Non-normalized spacings between Riemann zeroes ")
 plt.ylabel("frequency")
 plt.hist(riemann_zero_diff, bins=int(len(riemann_zero_diff)**0.5), alpha=0.5, label="Non-normalized spacings between Riemann zeroes")
 plt.legend()
