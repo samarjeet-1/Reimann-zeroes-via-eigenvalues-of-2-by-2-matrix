@@ -49,7 +49,7 @@ peval=np.array(peval) #converting list into numpy array
 reqzzarray=np.array(reqzzarray)
     
     
-diff_bound=0.01  # set the value of ε (epsilon)
+diff_bound=0.29  # set the value of ε (epsilon)
 
 rzdetarray=[] #determinants of matrices whose eigenvalues are riemann zeroes
 rzeigarray=[] #eigenvalues w
