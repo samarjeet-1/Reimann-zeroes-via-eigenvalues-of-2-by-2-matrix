@@ -6,7 +6,7 @@ import mpmath as mp
 
 
 
-#################################################################### T
+#################################################################### 
 def primesfrom2to(n):
     """ Input n>=6, Returns a array of primes, 2 <= p < n """
     sieve = numpy.ones(n//3 + (n%6==2), dtype=bool)
@@ -25,7 +25,8 @@ primes=primesfrom2to(x) #generate prime numbers
 
 
 peval=[] #stores largest eigenvalue of each matrix
-zzarray=np.loadtxt("D:\studies\python programs\zero",dtype=float) # loads pre-downloaded list of imaginary part of Riemann zeroes
+zzarray=np.loadtxt("D:\studies\python programs\zero",dtype=float) # loads pre-downloaded list of imaginary part of Riemann zeroes. Change the path to where you have stored 
+                                                                  #precomputed zeroes.
 detarray=[] # Stores determinant of all matrices
 trarray=[] #trace of marices
 matrixarray=[] # stores the matrices
